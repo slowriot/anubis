@@ -10,9 +10,9 @@ services:
         to:
           - global: true
     env:
-      - PUBLISH_REPO="https://github.com/daattali/beautiful-jekyll.git"
-      - PUBLISH_BRANCH="gh-pages"
-      - PUBLISH_PATH="/"
+      - PUBLISH_REPO=https://github.com/daattali/beautiful-jekyll.git
+      - PUBLISH_BRANCH=gh-pages
+      - PUBLISH_PATH=/
 
 profiles:
   compute:
