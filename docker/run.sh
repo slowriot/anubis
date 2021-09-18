@@ -14,7 +14,9 @@ if [ -z "$path" ]; then
   path="/"
 fi
 
+# set up global configs
 git config --global advice.detachedHead false
+bundle config set --local system 'true'
 
 last_commit=""
 
@@ -26,9 +28,7 @@ function jekyll_build {
     echo "Found .nojekyll file in root of repo - not using jekyll to process the site."
   else
     echo "Using jekyll to build the site..."
-
-    bundle config set --local system 'true'
-    bundle install
+    time bundle install
 
     bundle exec jekyll build --incremental
 
@@ -39,8 +39,8 @@ function jekyll_build {
       echo "WARNING: Failed to generate site using Jekyll - serving the publication path anyway as a fallback" >&2
     fi
   fi
-  # copy all files from the selected site to the web root
-  cp -rv ./* "$webroot"
+  # copy all files from the selected site to the web root, deleting what is no longer required
+  rsync -av --delete --delete-before ./* "$webroot"
 }
 
 function update_repo {
@@ -62,17 +62,11 @@ function update_repo {
     echo "No changes since our last check - no need for rebuild"
   fi
 }
-echo
-echo "Repository: $repo_url, branch: $branch, path: $path"
 
-# check out the repo and the specific publication source
-git clone "$repo_url" "/target"
-if [ "$?" != 0 ]; then
-  echo "Unable to clone repository $repo_url - cannot continue" >&2
-  exit 1
-fi
+
+echo "Starting webserver with holding page first..."
 mkdir -vp "$webroot"
-update_repo
+echo "Site currently building, please check back in a few minutes..." > "$webroot/index.html"
 
 # launch the webserver in the background - see nginx_site.conf for site configuration
 nginx
@@ -83,7 +77,18 @@ if [ "$?" != 0 ]; then
   exit 1
 fi
 
-echo "Webserver running.  Watching for source changes..."
+echo
+echo "Repository: $repo_url, branch: $branch, path: $path"
+
+# check out the repo and the specific publication source
+git clone "$repo_url" "/target"
+if [ "$?" != 0 ]; then
+  echo "Unable to clone repository $repo_url - cannot continue" >&2
+  exit 1
+fi
+update_repo
+
+echo "Site is live.  Watching for source changes..."
 cd "/target"
 # monitor for any upstream changes and rebuild
 while true; do
