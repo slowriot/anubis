@@ -309,8 +309,8 @@ yq "." <<< "$manifest_result"
 host=$(yq -r ".forwarded_ports.web[0].host" <<< "$manifest_result")
 port=$(yq -r ".forwarded_ports.web[0].externalPort" <<< "$manifest_result")
 if [ -z "$host" ] || [ "$host" = "null" ]; then
-  host=$(yq -r ".services.web.uris[0]" < "$manifest_result")
-  port="25565"
+  host=$(yq -r ".services.web.uris[0]" <<< "$manifest_result")
+  port="80"
 fi
 echo
 echo "Container has been launched, service URL:"
