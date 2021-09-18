@@ -312,9 +312,14 @@ if [ -z "$host" ] || [ "$host" = "null" ]; then
   host=$(yq -r ".services.web.uris[0]" <<< "$manifest_result")
   port="80"
 fi
+if [ "$port" = "80" ]; then
+  portstring=""
+else
+  portstring=":$port"
+fi
 echo
-echo "Container has been launched, service URL:"
-echo -e "\e[1;37m$host:$port\e[0m"
+echo "Site is online, service URL:"
+echo -e "http://\e[1;37m$host$portstring\e[0m"
 echo
 echo "View logs with:"
 echo "  akash provider lease-logs --dseq \"$dseq\" --provider \"$provider\" --from \"$wallet_address\" --node \"$node\""
