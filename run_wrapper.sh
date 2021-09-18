@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Launching $1 $PUBLISH_REPO $PUBLISH_BRANCH $PUBLISH_PATH..."
+"$1" "$PUBLISH_REPO" "$PUBLISH_BRANCH" "$PUBLISH_PATH"
