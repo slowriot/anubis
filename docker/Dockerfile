@@ -15,7 +15,8 @@ RUN apt-get update \
     libffi-dev \
     libssl-dev \
     bundler \
-    nginx
+    nginx \
+    rsync
 
 # configure the webserver
 COPY nginx_site.conf /etc/nginx/sites-available/default
