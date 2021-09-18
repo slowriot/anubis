@@ -31,7 +31,6 @@ function jekyll_build {
     bundle install
 
     bundle exec jekyll build --incremental
-    #bundle exec jekyll serve --host 0.0.0.0 --incremental --watch
 
     if [ -d "_site" ]; then
       # move to the jekyll generated site (for the next copy command)
@@ -40,8 +39,8 @@ function jekyll_build {
       echo "WARNING: Failed to generate site using Jekyll - serving the publication path anyway as a fallback" >&2
     fi
   fi
-  # copy all files from the site to the web root
-  cp -rv "/target"/* "$webroot"
+  # copy all files from the selected site to the web root
+  cp -rv ./* "$webroot"
 }
 
 function update_repo {
