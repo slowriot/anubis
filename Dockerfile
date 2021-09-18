@@ -1,5 +1,9 @@
 FROM debian:latest
 
+# disable installation of suggested and recommended packages
+RUN echo 'APT::Install-Suggests "false";' >> /etc/apt/apt.conf \
+  && echo 'APT::Install-Recommends "false";' >> /etc/apt/apt.conf
+
 # get needed system packages
 RUN apt-get update \
   && apt-get upgrade \
