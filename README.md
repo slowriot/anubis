@@ -100,9 +100,10 @@ You do not need to use this to close a deployment - it is provided just as a con
 Be careful - if you have launched other deployments more recently, it will simply attempt to close the last one you launched.
 
 ## Debugging
-The scripts can be run with various environment variables set for debugging purposes:
+The scripts can be run with various environment variables set for debugging purposes or to alter performance:
 - `debug=true` - will print out every `akash` command the scripts are about to run, allowing you to duplicate the workflow or debug errors.
 - `dry_run=true` - will only execute query commands, and will not commit anything to the blockchain.  Use in conjunction with `debug=true` to see a dry run of a deployment - however, bear in mind that as the new deployment won't be committed to the blockchain, subsequent commands querying that deployment will fail - this is to be expected, and the script handles this gracefully. This setting is useful to enable to repeat a deployment attempt, after one has failed, to find out what went wrong (as it will dry-run against the last deployment of yours it finds).
+- `node_by_ping=true` - will ping every available RPC node, and choose the best one based on ping.  By default, the first (default) node is chosen instead.  This should in theory yield better results, but some nodes are strangely flaky at the time of writing, so your mileage may vary.
 
 Example debugging commandline usage: `debug=true dry_run=true ./deploy.sh`
 
