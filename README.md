@@ -137,7 +137,7 @@ Once you're ready to push to Akash, don't forget to edit deploy.yaml and update 
 
 You can test the container locally with a repo of your choice (example repo given below) with:
 ```
-docker run -p 80:4000 -e PUBLISH_REPO="https://github.com/daattali/beautiful-jekyll.git" -e PUBLISH_BRANCH="gh-pages" -e PUBLISH_PATH="/" your_user_name/anubis
+docker run -p 4000:80 -e PUBLISH_REPO="https://github.com/daattali/beautiful-jekyll.git" -e PUBLISH_BRANCH="gh-pages" -e PUBLISH_PATH="/" your_user_name/anubis
 ```
 This will expose the web service locally at [http://localhost:4000](http://localhost:4000).
 
