@@ -99,7 +99,7 @@ checkout_result=$(curl -s "$api/projects/$project/checkout" -X POST -H "Content-
 
 echo "Checkout result: $checkout_result"
 
-mv -v "$checkout_result" "/temp_dir" && rm -vr "$target_dir" && mv -v "/temp_dir" "$target_dir" || exit 1
+mv -v "$checkout_result" "$target_dir.tmp" && rm -vr "$target_dir" && mv -v "$target_dir.tmp" "$target_dir" || exit 1
 
 echo "Checkout completed successfully to $target_dir"
 
