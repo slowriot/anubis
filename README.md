@@ -1,6 +1,6 @@
 # Anubis - Git-based webpages for Akash and Radicle
 
-Host a website anonymously, using decentralised [Akash](https://akash.network/) resources, directly from a [Radicle](https://radicle.xyz/) or git repository.  Updating the repository will rebuild and update the website automatically.  Existing [GitHub Pages](https://pages.github.com/) repositories can be migrated with no alteration.
+Host a website anonymously, using decentralised [Akash](https://akash.network/) resources, directly from a [Radicle](https://radicle.xyz/) or git repository.  Updating the repository will rebuild and update the website automatically.  Existing [GitHub Pages](https://pages.github.com/) repositories can be migrated with no alteration.  Deploy with a single command!
 
 Anubis runs on Akash, and fetches a git repository - either from a public git url on the internet, or a repository on Radicle - and renders it as a webpage.  This is effectively identical to how GitHub Pages works, but without the requirement to host your content on Github (although it will also work with Github URLs).
 
