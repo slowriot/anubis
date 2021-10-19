@@ -7,6 +7,8 @@ path="$3"
 webroot="/webroot"
 checkout_target="/target"
 
+remote="origin"
+
 if [ -z "$branch" ]; then
   echo "Usage: $0 repo_url.git branch"
   exit 1
@@ -52,7 +54,7 @@ function update_repo {
   latest_commit=$(git log --all --oneline | head -1)
   if [ "$latest_commit" != "$last_commit" ]; then
     echo "New commits have been made since we last checked - updating repo"
-    git checkout "origin/$branch"
+    git checkout "$remote/$branch"
     git reset --hard HEAD
     git clean -d --force
     git submodule update --init
@@ -83,6 +85,7 @@ echo
 echo "Repository: $repo_url, branch: $branch, path: $path"
 
 if grep -q '^rad:git:' <<< "$repo_url"; then
+  remote="rad"
   echo "Repository is on Radicle, connecting to the network to clone it..."
   ./radicle_fetch.sh "$repo_url" "$checkout_target"
   if [ "$?" != 0 ]; then
