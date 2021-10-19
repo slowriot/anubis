@@ -107,6 +107,9 @@ cd "$target_dir"
 git status
 
 # save the password for this project in our git credentials
-echo "rad://radicle:$pass@$(cut -d ':' -f 3- <<< "$project")" >> ~/.git-credentials
+git config --global credential.helper store
+git_url="rad://radicle:$pass@$(cut -d ':' -f 3- <<< "$project")"
+echo "$git_url" >> ~/.git-credentials
+echo "$git_url.git" >> ~/.git-credentials
 
 exit 0
