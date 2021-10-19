@@ -1,8 +1,10 @@
 # Anubis - Git Pages for Akash and Radicle
 
-Host a website anonymously, using decentralised Akash resources, directly from a Radicle or git repository.  Updating the repository will rebuild and update the website automatically.  Existing GitHub Pages repositories can be migrated with no alteration.
+Host a website anonymously, using decentralised [Akash](https://akash.network/) resources, directly from a [Radicle](https://radicle.xyz/) or git repository.  Updating the repository will rebuild and update the website automatically.  Existing [GitHub Pages](https://pages.github.com/) repositories can be migrated with no alteration.
 
 Anubis runs on Akash, and fetches a git repository - either from a public git url on the internet, or a repository on Radicle - and renders it as a webpage.  This is effectively identical to how GitHub Pages works, but without the requirement to host your content on Github (although it will also work with Github URLs).
+
+Anubis can also be run locally, or on other hosting providers - anywhere you can execute a [Docker](https://www.docker.com/) image.
 
 ## The Akash part
 Deploying on the Akash system allows for decentralised, anonymous, censorship-resistant hosting, at a lower price than equivalent resources from major cloud providers such as AWS.
@@ -36,12 +38,14 @@ The webserver used for the site is nginx.  The default site configuration can be
 - jq: `apt install jq`
 - yq: `pip install yq`
 
-# Setup
-Prior to using the scripts, you need to [create a wallet](https://docs.akash.network/guides/wallet).
+# Setup for Akash
+Prior to using the deploy scripts to deploy to Akash, you need to [create a wallet](https://docs.akash.network/guides/wallet).
 
 If you haven't ordered any Akash deployments before, you will also need to [create a certificate](https://docs.akash.network/guides/deployment#create-a-certificate).
 
-# Payment
+You can skip this portion if you want to run the Docker container locally or on hosting other than Akash.
+
+# Paying for deployment
 Deployments are paid for with the AKT cryptocurrency token.  You can buy the token on [various exchanges](https://akash.network/token).
 
 At the time of writing, you must have a minimum of 5AKT in your wallet - this is [held in escrow](https://docs.akash.network/glossary/escrow) for the duration of the deployment, and will be returned to you, minus the hosting costs you accrue.
