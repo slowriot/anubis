@@ -1,15 +1,24 @@
 #!/bin/bash
 
 project="$1"
+target_dir="$2"
 
 api="http://127.0.0.1:17246/v1"
-seeds="hyyqpngdoe4x4oto3emfdppbw7sj1pfaghbpmmhz5rqiuqg8uofmeo@seed.alt-clients.radicle.xyz:8776"
+seeds="hyncrnppok8iam6y5oemg4fkumj86mc4wsdiirp83z7tdxchk5dbn6@seed.upstream.radicle.xyz:8776"
 
-# remove this in prod:
-export RAD_HOME="/dev/shm/radicle_temp"
+# set an exit trap to clean up the radicle proxy when it's no longer required
+function on_exit {
+  echo "Cleaning up radicle-proxy on exit"
+  kill $(pidof radicle-proxy)
+}
+trap on_exit EXIT
+
+# for debugging:
+#export RAD_HOME="/dev/shm/radicle_temp"
+#export RUST_LOG=debug
 
 if [ -z "$project" ]; then
-  echo "Usage: $0 rad:git:project_urn" >&2
+  echo "Usage: $0 rad:git:project_urn target_dir" >&2
   exit 1
 fi
 
@@ -49,42 +58,21 @@ sleep 1
 
 # create an identity
 echo "Creating an identity:"
-curl -s "$api/identities" -X POST -H "Content-Type: application/json" -d "{\"handle\":\"Anubis\"}" -b "$cookie" | jq .
+curl -s "$api/identities" -X POST -H "Content-Type: application/json" -d "{\"handle\":\"Anubis\"}" -b "$cookie" | jq -C .
 
 echo
 echo "Radicle identity:"
-curl -s "$api/session" | jq .
-
-echo
-echo "Radicle requests:"
-curl -s "$api/projects/requests" -b "$cookie" | jq .
-
-echo
-echo "Radicle tracked:"
-curl -s "$api/projects/tracked" -b "$cookie" | jq .
-
-echo
-echo "Radicle failed:"
-curl -s "$api/projects/failed" -b "$cookie" | jq .
-
-echo
-echo "Radicle contributed:"
-curl -s "$api/projects/contributed" -b "$cookie" | jq .
+curl -s "$api/session" | jq -C .
 
 echo
 echo "Requesting to follow project $project..."
-curl -s "$api/projects/requests/$project" -X PUT -b "$cookie" | jq .
-
-#echo
-#echo "notifications local peer events:"
-#curl -v "$api/notifications/local_peer_events" -b "$cookie"
-
+curl -s "$api/projects/requests/$project" -X PUT -b "$cookie" | jq -C .
 
 while true; do
   request_status=$(
     curl -s "$api/projects/requests" -b "$cookie" | jq -r ".[0].type"
   )
-  if [ "$request_status" != "created" ] && [ "$request_status" != "cloning" ]; then
+  if [ "$request_status" != "created" ] && [ "$request_status" != "cloning" ] && [ "$request_status" != "requested" ] && [ "$request_status" != "found" ]; then
     break
   fi
 
@@ -98,20 +86,27 @@ if [ "$request_status" != "cloned" ]; then
   exit 1
 fi
 
-echo "Repo $project cloned successfully - ready to extract."
+echo "Repo $project cloned successfully - ready to check out.  Finding peers:"
 
-# parse the project appropriately for git, format example: rad:git:hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o -> rad://hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o
-project_git="rad://$(cut -d ':' -f 3- <<< "$project")"
+peers_result=$(curl -s "$api/projects/$project/peers" -b "$cookie")
+jq -C . <<< "$peers_result"
 
-# enable git credential helper, and add a credential to allow us to extract this
-git config credential.helper 'store'
-echo "rad://radicle:$pass@hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o.git" >> ~/.git-credentials
-echo "DEBUG: verifying git credentials:"
-ls -alh ~/.git-credentials
-cat ~/.git-credentials
+peer_id=$(jq -r ".[1].peerId" <<< "$peers_result")
+peer_handle=$(jq -r ".[1].status.user.metadata.handle" <<< "$peers_result")
 
-git clone --progress --verbose "$project_git" "target"
-tree target
-tree target/.git
-ls -alh target
-ls -alh target/.git/objects/*
+echo "Attempting to check out from peer \"$peer_handle\" ($peer_id)..."
+checkout_result=$(curl -s "$api/projects/$project/checkout" -X POST -H "Content-Type: application/json" -d "{\"path\":\"$target_dir\",\"peerId\":\"$peer_id\"}" -b "$cookie" | jq -r .)
+
+echo "Checkout result: $checkout_result"
+
+mv -v "$checkout_result" "/temp_dir" && rm -vr "$target_dir" && mv -v "/temp_dir" "$target_dir" || exit 1
+
+echo "Checkout completed successfully to $target_dir"
+
+cd "$target_dir"
+git status
+
+# save the password for this project in our git credentials
+echo "rad://radicle:$pass@$(cut -d ':' -f 3- <<< "$project")" >> ~/.git-credentials
+
+exit 0
