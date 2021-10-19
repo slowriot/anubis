@@ -34,7 +34,7 @@ RUN . ~/.profile && \
   git clone https://github.com/radicle-dev/radicle-upstream.git && \
   cd radicle-upstream && \
   cargo build --release && \
-  mv target/release/git-remote-rad target/release/radicle-proxy /usr/local/bin && \
+  mv target/release/git-remote-rad target/release/libapi.rlib target/release/radicle-proxy /usr/local/bin && \
   cd / && \
   rm -rf /radicle-upstream /usr/local/cargo/registry /usr/local/cargo/.package-cache
 
