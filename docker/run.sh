@@ -56,7 +56,7 @@ function update_repo {
   git fetch -p
   latest_commit=$(git log --all --oneline | head -1)
   if [ "$latest_commit" != "$last_commit" ]; then
-    echo "New commits have been made since we last checked - updating repo"
+    echo "$(date "+%Y:%m:%d %H:%M:%S") New commits have been made since we last checked - updating repo"
     git checkout "$remote/$branch"
     git reset --hard HEAD
     git clean -d --force
@@ -66,7 +66,7 @@ function update_repo {
 
     jekyll_build
   else
-    echo "No changes since our last check - no need for rebuild"
+    echo "$(date "+%Y:%m:%d %H:%M:%S") No changes since our last check - no need for rebuild"
   fi
 }
 
