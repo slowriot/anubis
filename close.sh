@@ -1,4 +1,4 @@
-0#!/bin/bash
+#!/bin/bash
 
 AKASH_NET="https://raw.githubusercontent.com/ovrclk/net/master/mainnet"
 
