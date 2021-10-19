@@ -87,7 +87,13 @@ function akash_query {
 }
 
 echo "Looking for our latest order..."
-orders=$(akash_query market order list | yq -r ".orders")
+order_result=$(akash_query market order list)
+orders=$(yq -r ".orders" <<< "$order_result")
+if [ -z "$orders" ]; then
+  echo "Error - no meaningful result from akash query market order list.  Result: $order_result" >&2
+  exit 1
+fi
+
 order_last=$(yq -r ". | length" <<< "$orders")
 newest_order=$(yq -r ".[$((orders_after - 1))]" <<< "$orders")
 if [ -z "$newest_order" ]; then
