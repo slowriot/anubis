@@ -327,8 +327,16 @@ if ! "$lease_validated"; then
 fi
 
 echo "Lease verified.  Sending manifest $deploy_file..."
+$debug && echo "DEBUG: sending: akash provider send-manifest \"$deploy_file\" --dseq \"$dseq\" --provider \"$provider\" --from \"$wallet_address\" --node \"$node\""
 $dry_run || akash provider send-manifest "$deploy_file" --dseq "$dseq" --provider "$provider" --from "$wallet_address" --node "$node"
+if [ "$?" != 0 ]; then
+  echo "Error sending manifest!  The provider did not accept it.  Retry manually or query the lease status:" >&2
+  echo "  akash provider send-manifest \"$deploy_file\" --dseq \"$dseq\" --provider \"$provider\" --from \"$wallet_address\" --node \"$node\"" >&2
+  echo "  akash provider lease-status --dseq \"$dseq\" --provider \"$provider\" --from \"$wallet_address\" --node \"$node\"" >&2
+  exit 1
+fi
 echo "Manifest sent.  Querying lease status..."
+$debug && echo "DEBUG: sending: akash provider lease-status --dseq \"$dseq\" --provider \"$provider\" --from \"$wallet_address\" --node \"$node\""
 manifest_result=$(akash provider lease-status --dseq "$dseq" --provider "$provider" --from "$wallet_address" --node "$node")
 yq "." <<< "$manifest_result"
 host=$(yq -r ".forwarded_ports.web[0].host" <<< "$manifest_result")
