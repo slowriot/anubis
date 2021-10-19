@@ -29,7 +29,7 @@ Anubis aims to emulate the specific features and configuration of GitHub Pages, 
 
 Anubis frequently checks for updates in the repository, and if a change has been found, it will automatically rebuild the website.  To push changes to your site, all you have to do is commit a change to your repo.  This check happens every 30 seconds by default - the delay can be configured in `deploy.yaml`.
 
-The webserver used for the site is nginx.  The default site configuration can be tweaked in `docker/nginx_site.conf`.
+The webserver used for the site is [nginx](https://www.nginx.com/).  The default site configuration can be tweaked in `docker/nginx_site.conf`.
 
 
 # Dependencies
@@ -74,7 +74,7 @@ This will get bids to the container with the repo you specified in deploy.yaml, 
 ## deploy.sh
 Execute with `./deploy.sh`.
 
-The script will verify all dependencies are present, and check that a suitable wallet exists; if more than one wallet is present on the system, it will prompt you to select the one you want to use.  It does not attempt to verify that you have enough funds, so please make sure you have sufficient funding for the esc>
+The script will verify all dependencies are present, and check that a suitable wallet exists; if more than one wallet is present on the system, it will prompt you to select the one you want to use.  It does not attempt to verify that you have enough funds, so please make sure you have sufficient funding for the escrow process (see above), as well as gas fees for blockchain transactions and the deployment fees themselves.
 
 The script downloads the latest list of nodes, and automatically selects the best one based on its ping time relative to you.
 
@@ -95,14 +95,14 @@ Execute with `./close.sh`.
 
 A convenience wrapper to automatically find the last deployment you launched, and tell akash to close it (i.e. shut it down) immediately.
 
-You do not need to use this to close a deployment - it is provided just as a convenience function.  You can always just close down deployments manually as per the user guide, using the `dseq` number which was given to you by the `deploy.sh` script.  Guidance for how to close a deployment manually: https://docs.akas>
+You do not need to use this to close a deployment - it is provided just as a convenience function.  You can always just close down deployments manually as per the user guide, using the `dseq` number which was given to you by the `deploy.sh` script.  Guidance for how to close a deployment manually: https://docs.akash.network/guides/deployment#close-your-deployment
 
 Be careful - if you have launched other deployments more recently, it will simply attempt to close the last one you launched.
 
 ## Debugging
 The scripts can be run with various environment variables set for debugging purposes:
 - `debug=true` - will print out every `akash` command the scripts are about to run, allowing you to duplicate the workflow or debug errors.
-- `dry_run=true` - will only execute query commands, and will not commit anything to the blockchain.  Use in conjunction with `debug=true` to see a dry run of a deployment - however, bear in mind that as the new deployment won't be committed to the blockchain, subsequent commands querying that deployment will fail >
+- `dry_run=true` - will only execute query commands, and will not commit anything to the blockchain.  Use in conjunction with `debug=true` to see a dry run of a deployment - however, bear in mind that as the new deployment won't be committed to the blockchain, subsequent commands querying that deployment will fail - this is to be expected, and the script handles this gracefully. This setting is useful to enable to repeat a deployment attempt, after one has failed, to find out what went wrong (as it will dry-run against the last deployment of yours it finds).
 
 Example debugging commandline usage: `debug=true dry_run=true ./deploy.sh`
 
