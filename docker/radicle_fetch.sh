@@ -27,8 +27,12 @@ if ! grep -q '^rad:git:' <<< "$project"; then
   exit 1
 fi
 
-# randomly generate a password
-pass=$(apg -m16 -Mnlc -n1)
+pass=$(cat ~/.radicle_pass.txt)
+if [ -z "$pass" ]; then
+  # randomly generate a password if one doesn't already exist
+  pass=$(apg -m16 -Mnlc -n1)
+  echo "$pass" > ~/.radicle_pass.txt
+fi
 
 # bring up the radicle proxy in the background
 echo "Starting Radicle proxy with default seeds $seeds..."
