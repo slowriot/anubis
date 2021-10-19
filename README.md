@@ -127,8 +127,8 @@ You will need `Docker` installed locally for this.
 
 To build a new version of the Docker container and push it to the Docker registry:
 ```
-docker build -t your_user_name/gitpages_jekyll_akash docker/
-docker push your_user_name/gitpages_jekyll_akash
+docker build -t your_user_name/anubis docker/
+docker push your_user_name/anubis
 ```
 
 Once you're ready to push to Akash, don't forget to edit deploy.yaml and update `image:` to point to your new image, rather than the pre-built one included.
@@ -137,7 +137,7 @@ Once you're ready to push to Akash, don't forget to edit deploy.yaml and update 
 
 You can test the container locally with a repo of your choice (example repo given below) with:
 ```
-docker run -p 80:4000 -e PUBLISH_REPO="https://github.com/daattali/beautiful-jekyll.git" -e PUBLISH_BRANCH="gh-pages" -e PUBLISH_PATH="/" your_user_name/gitpages_jekyll_akash
+docker run -p 80:4000 -e PUBLISH_REPO="https://github.com/daattali/beautiful-jekyll.git" -e PUBLISH_BRANCH="gh-pages" -e PUBLISH_PATH="/" your_user_name/anubis
 ```
 This will expose the web service locally at [http://localhost:4000](http://localhost:4000).
 
