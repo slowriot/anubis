@@ -1,4 +1,4 @@
-# Anubis - Git Pages for Akash and Radicle
+# Anubis - Git-based webpages for Akash and Radicle
 
 Host a website anonymously, using decentralised [Akash](https://akash.network/) resources, directly from a [Radicle](https://radicle.xyz/) or git repository.  Updating the repository will rebuild and update the website automatically.  Existing [GitHub Pages](https://pages.github.com/) repositories can be migrated with no alteration.
 
@@ -109,7 +109,7 @@ Example debugging commandline usage: `debug=true dry_run=true ./deploy.sh`
 # Testing a site locally
 You do not need to spin up an Akash instance, or even a local Docker container, to test changes to your GitHub Pages-style site before you push them.
 
-To test a GitHub Pages-compatible site locally, use `jekyll` and `bundle` in the publication root directory of the repo you wish to publish:
+To test a GitHub Pages-compatible site locally, use [jekyll](https://jekyllrb.com/) and [bundler](https://jekyllrb.com/docs/) in the publication root directory of the repo you wish to publish:
 ```
 bundle install
 bundle exec jekyll serve --incremental --watch
