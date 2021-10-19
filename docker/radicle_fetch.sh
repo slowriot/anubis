@@ -42,11 +42,14 @@ radicle-proxy --default-seed "$seeds" &
 sleep 1
 
 response=$(
-  # create new keystore:
-  curl -sv "$api/keystore" -X POST -H "Content-Type: application/json" -d "{\"passphrase\":\"$pass\"}" 2>&1
-  
-  # unseal existing keystore:
-  #curl -sv "$api/keystore/unseal" -X POST -H "Content-Type: application/json" -d "{\"passphrase\":\"$pass\"}" 2>&1
+  if [ -f ~/.radicle_keystore_created ]; then
+    # unseal existing keystore:
+    curl -sv "$api/keystore/unseal" -X POST -H "Content-Type: application/json" -d "{\"passphrase\":\"$pass\"}" 2>&1
+  else
+    # create new keystore:
+    curl -sv "$api/keystore" -X POST -H "Content-Type: application/json" -d "{\"passphrase\":\"$pass\"}" 2>&1
+    > ~/.radicle_keystore_created
+  fi
 )
 cookie=$(grep '^< set-cookie: ' <<< "$response" | cut -d ' ' -f 3- | cut -d ';' -f 1)
 if [ -z "$cookie" ]; then
