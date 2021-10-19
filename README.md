@@ -18,7 +18,7 @@ Any existing git repository can be uploaded to Radicle with no modification, and
 
 It is not necessary to use Radicle to host your repository - you can also just provide a normal https git URL, or even your existing Github repository if you already use Gitpages.  Anubis is designed to be flexible enough to support either seamlessly.
 
-## Jekyll hosting in Docker
+## Jekyll & nginx hosting in Docker
 Akash allows you to quickly deploy a Docker container to computing resources with any specifications you require.  This repository contains the source for a Docker image which does all the hard work.  This fetches a git repository and renders a website using Jekyll, in a very similar way to how Gitpages works behind the scenes.
 
 You do not need to build the Docker image, or have Docker installed locally, to run Anubis.  A pre-built Docker image is uploaded by the maintainer to the Docker registry, and this is used by default - see "quick start" below.
@@ -26,6 +26,8 @@ You do not need to build the Docker image, or have Docker installed locally, to 
 Anubis aims to emulate the specific features and configuration of Gitpages, so any pages you may already be hosting with Gitpages can be smoothly transitioned to render with Anubis with no changes required to your pages.  If you find an inconsistency between how Anubis and Gitpages renders a site, please raise an issue.
 
 Anubis frequently checks for updates in the repository, and if a change has been found, it will automatically rebuild the website.  To push changes to your site, all you have to do is commit a change to your repo.  This check happens every 30 seconds by default - the delay can be configured in `deploy.yaml`.
+
+The webserver used for the site is nginx.  The default site configuration can be tweaked in `docker/nginx_site.conf`.
 
 
 # Dependencies
