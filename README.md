@@ -115,11 +115,13 @@ It is also possible to test your site with the full docker image locally before 
 
 
 # Uploading to Radicle
+Radicle projects are managed with the [Radicle Upstream](https://radicle.xyz/downloads.html) client.
+
 Refer to the [Radicle documentation](https://docs.radicle.xyz/docs/using-radicle/creating-projects) for info on how to create and share Radicle projects.
 
 Be aware that at the time of writing, Radicle is in active development, and replication is not fully functional on some public nodes - you may need to run your own seed node at this point to share a new project.  This project is configured with a seed node that is known to work at the time of writing.
 
-An existing Radicle project that is known to work at this time is `rad:git:hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o` - for debugging, try to feed this to Anubis as your first port of call - if it succeeds, but your own project fails, the issue may be with replication on Radicle's side.
+An existing Radicle project that is known to work at the time of writing is `rad:git:hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o` - for debugging, try to feed this to Anubis as your first test.  If it succeeds, but your own project fails, the issue may be with replication on Radicle's side.
 
 
 # Configuring deploy.yaml
