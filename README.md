@@ -1,8 +1,8 @@
-# Anubis - Gitpages for Akash and Radicle
+# Anubis - Git Pages for Akash and Radicle
 
-Host a website anonymously, using decentralised Akash resources, directly from a Radicle or git repository.  Updating the repository will rebuild and update the website automatically.  Existing Gitpages repositories can be migrated with no alteration.
+Host a website anonymously, using decentralised Akash resources, directly from a Radicle or git repository.  Updating the repository will rebuild and update the website automatically.  Existing GitHub Pages repositories can be migrated with no alteration.
 
-Anubis runs on Akash, and fetches a git repository - either from a public git url on the internet, or a repository on Radicle - and renders it as a webpage.  This is effectively identical to how Gitpages works, but without the requirement to host your content on Github (although it will also work with Github URLs).
+Anubis runs on Akash, and fetches a git repository - either from a public git url on the internet, or a repository on Radicle - and renders it as a webpage.  This is effectively identical to how GitHub Pages works, but without the requirement to host your content on Github (although it will also work with Github URLs).
 
 ## The Akash part
 Deploying on the Akash system allows for decentralised, anonymous, censorship-resistant hosting, at a lower price than equivalent resources from major cloud providers such as AWS.
@@ -16,14 +16,14 @@ Radicle provides decentralised, peer to peer git repository hosting.  The advant
 
 Any existing git repository can be uploaded to Radicle with no modification, and all git features and history are retained.
 
-It is not necessary to use Radicle to host your repository - you can also just provide a normal https git URL, or even your existing Github repository if you already use Gitpages.  Anubis is designed to be flexible enough to support either seamlessly.
+It is not necessary to use Radicle to host your repository - you can also just provide a normal https git URL, or even your existing Github repository if you already use GitHub Pages.  Anubis is designed to be flexible enough to support either seamlessly.
 
 ## Jekyll & nginx hosting in Docker
-Akash allows you to quickly deploy a Docker container to computing resources with any specifications you require.  This repository contains the source for a Docker image which does all the hard work.  This fetches a git repository and renders a website using Jekyll, in a very similar way to how Gitpages works behind the scenes.
+Akash allows you to quickly deploy a Docker container to computing resources with any specifications you require.  This repository contains the source for a Docker image which does all the hard work.  This fetches a git repository and renders a website using Jekyll, in a very similar way to how GitHub Pages works behind the scenes.
 
 You do not need to build the Docker image, or have Docker installed locally, to run Anubis.  A pre-built Docker image is uploaded by the maintainer to the Docker registry, and this is used by default - see "quick start" below.
 
-Anubis aims to emulate the specific features and configuration of Gitpages, so any pages you may already be hosting with Gitpages can be smoothly transitioned to render with Anubis with no changes required to your pages.  If you find an inconsistency between how Anubis and Gitpages renders a site, please raise an issue.
+Anubis aims to emulate the specific features and configuration of GitHub Pages, so any pages you may already be hosting with GitHub Pages can be smoothly transitioned to render with Anubis with no changes required to your pages.  If you find an inconsistency between how Anubis and GitHub Pages renders a site, please raise an issue.
 
 Anubis frequently checks for updates in the repository, and if a change has been found, it will automatically rebuild the website.  To push changes to your site, all you have to do is commit a change to your repo.  This check happens every 30 seconds by default - the delay can be configured in `deploy.yaml`.
 
@@ -103,9 +103,9 @@ The scripts can be run with various environment variables set for debugging purp
 Example debugging commandline usage: `debug=true dry_run=true ./deploy.sh`
 
 # Testing a site locally
-You do not need to spin up an Akash instance, or even a local Docker container, to test changes to your Gitpages-style site before you push them.
+You do not need to spin up an Akash instance, or even a local Docker container, to test changes to your GitHub Pages-style site before you push them.
 
-To test a Gitpages-compatible site locally, use `jekyll` and `bundle` in the publication root directory of the repo you wish to publish:
+To test a GitHub Pages-compatible site locally, use `jekyll` and `bundle` in the publication root directory of the repo you wish to publish:
 ```
 bundle install
 bundle exec jekyll serve --incremental --watch
@@ -115,7 +115,21 @@ It is also possible to test your site with the full docker image locally before 
 
 
 # Uploading to Radicle
-TODO - document importing a git repo to radicle
+Refer to the [Radicle documentation](https://docs.radicle.xyz/docs/using-radicle/creating-projects) for info on how to create and share Radicle projects.
+
+Be aware that at the time of writing, Radicle is in active development, and replication is not fully functional on some public nodes - you may need to run your own seed node at this point to share a new project.  This project is configured with a seed node that is known to work at the time of writing.
+
+An existing Radicle project that is known to work at this time is `rad:git:hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o` - for debugging, try to feed this to Anubis as your first port of call - if it succeeds, but your own project fails, the issue may be with replication on Radicle's side.
+
+
+# Configuring deploy.yaml
+For full details of how to configure deploy.yaml, refer to the [Akash documentation](https://docs.akash.network/cli/deployment#create-your-configuration).  This portion covers only the custom variables defined in this config:
+
+- `PUBLISH_REPO` - the URL of the repository to publish.  Either a web git URL or a Radicle URN.
+- `PUBLISH_BRANCH` - what branch of the repo should be published.  For GitHub Pages migrations this will usually be `gh-pages` by convention, otherwise you'll probably want to use `master`.
+- `PUBLISH_PATH` - the subpath in your repository to use as the web root.  If you want to use the top level, just specify `/`.
+- `RADICLE_SEEDS` - initial seeds to use to connect to the Radicle network.  If you're running your own org, or want a specific project on a given seed, update this.  Can be safely ignored (and deleted) for non-Radicle projects.
+- `REFRESH_DELAY` - how many seconds to wait between checking for changes on the remote repository.
 
 
 # Building the container
