@@ -44,7 +44,7 @@ RUN . ~/.profile && \
 COPY nginx_site.conf /etc/nginx/sites-available/default
 
 # copy run scripts
-COPY run.sh run_wrapper.sh /
+COPY run.sh run_wrapper.sh radicle_fetch.sh /
 
 # execute
 CMD ["/run_wrapper.sh", "/run.sh"]

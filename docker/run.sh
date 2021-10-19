@@ -81,9 +81,12 @@ echo
 echo "Repository: $repo_url, branch: $branch, path: $path"
 
 if grep -q '^rad:git:' <<< "$repo_url"; then
+  echo "Repository is on Radicle, connecting to the network to clone it..."
+  ./radicle_fetch.sh "$repo_url"
+
   # the repo is a radicle link - parse it appropriately, format example: rad:git:hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o -> rad://hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o
   repo_url="rad://$(cut -d ':' -f 3- <<< "$repo_url")"
-  echo "Repository is on Radicle - parsed URL is $repo_url"
+  echo "Radicle parsed git URL is $repo_url"
 fi
 
 # check out the repo and the specific publication source
