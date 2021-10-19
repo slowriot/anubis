@@ -66,7 +66,7 @@ function update_repo {
 
 echo "Starting webserver with holding page first..."
 mkdir -vp "$webroot"
-echo "Site currently building, please check back in a few minutes..." > "$webroot/index.html"
+echo "Site currently building from $repo_url, please check back in a few minutes...<br />Started at: $(date)" > "$webroot/index.html"
 
 # launch the webserver in the background - see nginx_site.conf for site configuration
 nginx
@@ -82,19 +82,20 @@ echo "Repository: $repo_url, branch: $branch, path: $path"
 
 if grep -q '^rad:git:' <<< "$repo_url"; then
   echo "Repository is on Radicle, connecting to the network to clone it..."
-  ./radicle_fetch.sh "$repo_url"
-
-  # the repo is a radicle link - parse it appropriately, format example: rad:git:hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o -> rad://hnrk8ueib11sen1g9n1xbt71qdns9n4gipw1o
-  repo_url="rad://$(cut -d ':' -f 3- <<< "$repo_url")"
-  echo "Radicle parsed git URL is $repo_url"
+  ./radicle_fetch.sh "$repo_url" "/target"
+  if [ "$?" != 0 ]; then
+    echo "Unable to clone Radicle repository $repo_url - cannot continue" >&2
+    exit 1
+  fi
+else
+  # check out the repo and the specific publication source
+  git clone -v "$repo_url" "/target"
+  if [ "$?" != 0 ]; then
+    echo "Unable to clone git repository $repo_url - cannot continue" >&2
+    exit 1
+  fi
 fi
 
-# check out the repo and the specific publication source
-git clone -v "$repo_url" "/target"
-if [ "$?" != 0 ]; then
-  echo "Unable to clone repository $repo_url - cannot continue" >&2
-  exit 1
-fi
 update_repo
 
 echo "Site is live.  Watching for source changes..."
