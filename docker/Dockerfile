@@ -19,6 +19,8 @@ RUN apt-get update && \
     bundler \
     nginx \
     rsync \
+    jq \
+    apg \
     tmux && \
   apt-get autoremove && \
   rm -rf /var/lib/apt/lists/*
