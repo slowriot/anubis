@@ -5,6 +5,7 @@ branch="$2"
 path="$3"
 
 webroot="/webroot"
+checkout_target="/target"
 
 if [ -z "$branch" ]; then
   echo "Usage: $0 repo_url.git branch"
@@ -22,7 +23,7 @@ last_commit=""
 
 function jekyll_build {
   echo "Building web content..."
-  cd "/target/$path"
+  cd "$checkout_target/$path"
   # determine whether we should use jekyll
   if [ -f ".nojekyll" ]; then
     echo "Found .nojekyll file in root of repo - not using jekyll to process the site."
@@ -37,6 +38,7 @@ function jekyll_build {
       cd "_site"
     else
       echo "WARNING: Failed to generate site using Jekyll - serving the publication path anyway as a fallback" >&2
+      rm "$webroot/index.html"
     fi
   fi
   # copy all files from the selected site to the web root, deleting what is no longer required
@@ -44,7 +46,7 @@ function jekyll_build {
 }
 
 function update_repo {
-  cd "/target"
+  cd "$checkout_target"
   # check out the repo and the specific publication source
   git fetch -p
   latest_commit=$(git log --all --oneline | head -1)
@@ -82,14 +84,14 @@ echo "Repository: $repo_url, branch: $branch, path: $path"
 
 if grep -q '^rad:git:' <<< "$repo_url"; then
   echo "Repository is on Radicle, connecting to the network to clone it..."
-  ./radicle_fetch.sh "$repo_url" "/target"
+  ./radicle_fetch.sh "$repo_url" "$checkout_target"
   if [ "$?" != 0 ]; then
     echo "Unable to clone Radicle repository $repo_url - cannot continue" >&2
     exit 1
   fi
 else
   # check out the repo and the specific publication source
-  git clone -v "$repo_url" "/target"
+  git clone -v "$repo_url" "$checkout_target"
   if [ "$?" != 0 ]; then
     echo "Unable to clone git repository $repo_url - cannot continue" >&2
     exit 1
@@ -99,7 +101,7 @@ fi
 update_repo
 
 echo "Site is live.  Watching for source changes..."
-cd "/target"
+cd "$checkout_target"
 # monitor for any upstream changes and rebuild
 while true; do
   sleep 30
