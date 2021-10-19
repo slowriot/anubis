@@ -51,9 +51,18 @@ function jekyll_build {
 }
 
 function update_repo {
-  cd "$checkout_target"
-  # check out the repo and the specific publication source
-  git fetch -p
+  if grep -q '^rad:git:' <<< "$repo_url"; then
+    # check out latest version with Radicle
+    cd /
+    rm -rf "$checkout_target"
+    ./radicle_fetch.sh "$repo_url" "$checkout_target"
+    cd "$checkout_target"
+  else
+    # check out latest version with git
+    cd "$checkout_target"
+    # check out the repo and the specific publication source
+    git fetch -p
+  fi
   latest_commit=$(git log --all --oneline | head -1)
   if [ "$latest_commit" != "$last_commit" ]; then
     echo "$(date "+%Y:%m:%d %H:%M:%S") New commits have been made since we last checked - updating repo"
