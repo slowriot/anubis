@@ -9,6 +9,9 @@ checkout_target="/target"
 
 remote="origin"
 
+delay="${REFRESH_DELAY:-30}"
+
+
 if [ -z "$branch" ]; then
   echo "Usage: $0 repo_url.git branch"
   exit 1
@@ -103,10 +106,10 @@ fi
 
 update_repo
 
-echo "Site is live.  Watching for source changes..."
+echo "Site is live.  Watching for source changes, refreshing every $delay seconds..."
 cd "$checkout_target"
 # monitor for any upstream changes and rebuild
 while true; do
-  sleep 30
+  sleep "$delay"
   update_repo
 done
