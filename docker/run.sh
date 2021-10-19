@@ -111,9 +111,8 @@ else
     echo "Unable to clone git repository $repo_url - cannot continue" >&2
     exit 1
   fi
+  update_repo
 fi
-
-update_repo
 
 echo "Site is live.  Watching for source changes, refreshing every $delay seconds..."
 cd "$checkout_target"
