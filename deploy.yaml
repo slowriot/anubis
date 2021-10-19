@@ -12,6 +12,7 @@ services:
       - PUBLISH_REPO=https://github.com/daattali/beautiful-jekyll.git
       - PUBLISH_BRANCH=gh-pages
       - PUBLISH_PATH=/
+      - RADICLE_SEEDS=hyncrnppok8iam6y5oemg4fkumj86mc4wsdiirp83z7tdxchk5dbn6@seed.upstream.radicle.xyz:8776
       - REFRESH_DELAY=30
 
 profiles:

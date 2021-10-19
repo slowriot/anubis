@@ -4,7 +4,7 @@ project="$1"
 target_dir="$2"
 
 api="http://127.0.0.1:17246/v1"
-seeds="hyncrnppok8iam6y5oemg4fkumj86mc4wsdiirp83z7tdxchk5dbn6@seed.upstream.radicle.xyz:8776"
+seeds=${RADICLE_SEEDS:-hyncrnppok8iam6y5oemg4fkumj86mc4wsdiirp83z7tdxchk5dbn6@seed.upstream.radicle.xyz:8776}
 
 # set an exit trap to clean up the radicle proxy when it's no longer required
 function on_exit {
@@ -31,6 +31,7 @@ fi
 pass=$(apg -m16 -Mnlc -n1)
 
 # bring up the radicle proxy in the background
+echo "Starting Radicle proxy with default seeds $seeds..."
 radicle-proxy --default-seed "$seeds" &
 
 # wait a moment for it to launch before we start sending requests
