@@ -7,6 +7,7 @@ gaslimit="300000"
 
 debug=${debug:-'false'}
 dry_run=${dry_run:-'false'}
+node_by_ping=${node_by_ping:-'false'}
 
 version=$(akash version)
 if [ "$?" != 0 ]; then
@@ -64,16 +65,20 @@ fi
 echo "Chain ID: $chain_id"
 
 node=$(head -1 <<< "$nodes")
-lowest_ping=10000
-for rpc in $nodes; do
-  hostname=$(cut -d '/' -f 3- <<< "$rpc" | cut -d ':' -f 1)
-  ping=$(ping -c1 "$hostname" | grep ^rtt | cut -d '/' -f 5)
-  if (( $(bc -l <<< "$ping < $lowest_ping") )); then
-    lowest_ping="$ping"
-    node="$rpc"
-  fi
-done
-echo "Selected node $node with lowest ping ${lowest_ping}ms"
+if $node_by_ping; then
+  lowest_ping=10000
+  for rpc in $nodes; do
+    hostname=$(cut -d '/' -f 3- <<< "$rpc" | cut -d ':' -f 1)
+    ping=$(ping -c1 "$hostname" | grep ^rtt | cut -d '/' -f 5)
+    if (( $(bc -l <<< "$ping < $lowest_ping") )); then
+      lowest_ping="$ping"
+      node="$rpc"
+    fi
+  done
+  echo "Selected node $node with lowest ping ${lowest_ping}ms"
+else
+  echo "Selected default node $node"
+fi
 
 function akash_tx {
   # wrapper function to send a transaction
