@@ -62,11 +62,11 @@ A script is provided to estimate costs.  This is also called by the deploy scrip
 # Quick start
 Edit `deploy.yaml` to configure your deployment.  You can configure all aspects of the deployment, but to get started, you only need to update the `PUBLISH_REPO`, `PUBLISH_BRANCH` and `PUBLISH_PATH` variables, to point to the repository you want to use.  Alternatively, a simple default is provided to verify everything works.
 
-To deploy to Akash, simply run
+To deploy an Anubis instance to Akash, simply run
 ```
 deploy.sh -y
 ```
-This will get bids to the container with the repo you specified in deploy.yaml, automatically select the lowest bidder, and deploy without further confirmation.
+This will get bids to the container with the repo you specified in deploy.yaml, automatically select the lowest bidder, and deploy without further confirmation.  You will receive a URL for your newly deployed website on the commandline.
 
 
 
