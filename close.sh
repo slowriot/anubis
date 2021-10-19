@@ -88,6 +88,10 @@ function akash_query {
 
 echo "Looking for our latest order..."
 order_result=$(akash_query market order list)
+if [ -z "$order_result" ]; then
+  echo "Empty result from akash query market order list.  Something is wrong with the remote RPC node." >&2
+  exit 1
+fi
 orders=$(yq -r ".orders" <<< "$order_result")
 if [ -z "$orders" ]; then
   echo "Error - no meaningful result from akash query market order list.  Result: $order_result" >&2

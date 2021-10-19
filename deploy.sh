@@ -102,7 +102,17 @@ function akash_query {
 }
 
 echo "Getting count of past orders... "
-orders_before=$(akash_query market order list | yq -r ".orders | length")
+order_result=$(akash_query market order list)
+if [ -z "$order_result" ]; then
+  echo "Empty result from akash query market order list.  Something is wrong with the remote RPC node." >&2
+  exit 1
+fi
+orders_before=$(yq -r ".orders | length" <<< "$order_result")
+if [ -z "$orders_before" ]; then
+  echo "Error - no meaningful result from akash query market order list.  Result: $order_result" >&2
+  exit 1
+fi
+
 
 echo "Requesting deployment... "
 $dry_run || akash_tx deployment create "$deploy_file"
@@ -111,7 +121,17 @@ $dry_run || echo "Waiting 30 seconds for our order to propagate..."
 $dry_run || sleep 30
 
 echo "Looking for our new order..."
-orders=$(akash_query market order list | yq -r ".orders")
+order_result=$(akash_query market order list)
+while [ -z "$order_result" ]; do
+  echo "Empty result from akash query market order list.  Something is wrong with the remote RPC node.  Retrying, to avoid losing our deployment..." >&2
+  order_result=$(akash_query market order list)
+done
+orders=$(yq -r ".orders" <<< "$order_result")
+if [ -z "$orders_before" ]; then
+  echo "Error - no meaningful result from akash query market order list.  Result: $order_result" >&2
+  exit 1
+fi
+
 orders_after=$(yq -r ". | length" <<< "$orders")
 $dry_run || \
   if [ "$orders_after" -le "$orders_before" ]; then
